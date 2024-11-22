@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mine</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .mine-item-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px;
+        }
+
+        .mine-item {
+            background-color: #2a2a2a;
+            width: 150px; /* Set size of mine item bars to 150px */
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .mine-item img {
+            width: 70px;
+            margin-bottom: 10px;
+        }
+
+        .mine-item h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .mine-item p {
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .mine-item button {
+            padding: 8px;
+            background-color: #fff;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .mine-item button.disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1c1c1c;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            z-index: 1000;
+            width: 80%;
+        }
+
+        .popup h3 {
+            margin-bottom: 15px;
+        }
+
+        .popup input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .popup button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #fff;
+            color: #000;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .button-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            background-color: black;
+            padding: 10px 0;
+        }
+
+        .button {
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 0 10px white;
+            cursor: pointer;
+        }
+
+        .button img {
+            width: 100%;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Mine to Earn</h1>
+
+    <div class="mine-item-container" id="mineItems">
+        <!-- Mine items will be dynamically inserted here -->
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="popup">
+        <h3>Enter Code</h3>
+        <input type="text" id="taskCode" placeholder="Enter code here">
+        <button onclick="checkMineCode()">Submit</button>
+    </div>
+
+    <div class="button-bar">
+        <button class="button" onclick="location.href='home.html'"><img src="home.png" alt="Home"></button>
+        <button class="button" onclick="location.href='mine.html'"><img src="mine.png" alt="Mine"></button>
+        <button class="button" onclick="location.href='airdrop.html'"><img src="airdrop.png" alt="Airdrop"></button>
+    </div>
+
+    <script>
+        const mineItems = [
+            { id: 12, logo: "https://static.hamsterkombatgame.io/earn/youtube.webp", description: "Mine to: Earn 100 AB Coin", reward: 100, code: "AB1" },
+            { id: 13, logo: "https://i.postimg.cc/wjGf7B4W/5b9babe8-5420-4bbd-9912-25c59a15a8e7-1.webp", description: "AB Coin lunch", reward: 50, code: "AB2" }
+        ];
+
+        const mineItemContainer = document.getElementById('mineItems');
+        const popup = document.getElementById('popup');
+        const overlay = document.getElementById('overlay');
+        let currentMineTask = null;
+
+        // Render Mine Items
+        mineItems.forEach(item => {
+            const mineItem = document.createElement('div');
+            mineItem.className = 'mine-item';
+
+            const logo = document.createElement('img');
+            logo.src = item.logo;
+            mineItem.appendChild(logo);
+
+            const name = document.createElement('h3');
+            name.textContent = item.description;
+            mineItem.appendChild(name);
+
+            const reward = document.createElement('p');
+            reward.textContent = `Reward: ${item.reward} AB Coin`;
+            mineItem.appendChild(reward);
+
+            const mineButton = document.createElement('button');
+            mineButton.textContent = "Mine";
+            mineButton.onclick = () => startMine(item, mineButton);
+
+            if (localStorage.getItem(`mine_${item.id}`) === 'completed') {
+                mineButton.textContent = "Complete";
+                mineButton.classList.add('disabled');
+                mineButton.disabled = true;
+            }
+
+            mineItem.appendChild(mineButton);
+            mineItemContainer.appendChild(mineItem);
+        });
+
+        function startMine(item, button) {
+            // Show Popup to enter code
+            currentMineTask = item;
+            popup.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function checkMineCode() {
+            const enteredCode = document.getElementById('taskCode').value;
+            if (enteredCode === currentMineTask.code) {
+                // Add AB Coin to LocalStorage
+                const currentCoins = parseInt(localStorage.getItem('abCoins')) || 0;
+                localStorage.setItem('abCoins', currentCoins + currentMineTask.reward);
+                alert(`You earned ${currentMineTask.reward} AB Coins!`);
+
+                // Update the button and set the task as complete
+                completeMineTask(currentMineTask.id);
+
+                // Close Popup
+                popup.style.display = 'none';
+                overlay.style.display = 'none';
+            } else {
+                alert('Incorrect code!');
+            }
+        }
+
+        function completeMineTask(taskId) {
+            // Mark the task as completed in LocalStorage
+            localStorage.setItem(`mine_${taskId}`, 'completed');
+
+            // Update the Mine Item UI
+            const mineItems = document.querySelectorAll('.mine-item');
+            mineItems.forEach(item => {
+                const mineButton = item.querySelector('button');
+                const itemId = item.querySelector('h3').textContent;
+
+                if (mineButton && mineButton.textContent === "Mine" && itemId === currentMineTask.description) {
+                    mineButton.textContent = "Complete";
+                    mineButton.classList.add('disabled');
+                    mineButton.disabled = true;
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

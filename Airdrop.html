@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airdrop</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .header img {
+            width: 150px;
+            height: 150px;
+        }
+
+        .coin-box {
+            margin: 20px 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            width: 250px;
+            text-align: center;
+        }
+
+        .coin-box p {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .coin-box .airdrop-counter {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .timer-bar {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .time-box {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            flex: 1;
+            margin: 5px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .button-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            background-color: black;
+            padding: 10px 0;
+        }
+
+        .button {
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 0 10px white;
+            cursor: pointer;
+        }
+
+        .button img {
+            width: 100%;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="coin.png" alt="Coin">
+    </div>
+
+    <div class="coin-box">
+        <p>Your Airdrop Points</p>
+        <p class="airdrop-counter" id="abCoinCounter">0</p>
+    </div>
+
+    <div class="timer-bar">
+        <div class="time-box" id="months">M</div>
+        <div class="time-box" id="days">D</div>
+        <div class="time-box" id="hours">H</div>
+        <div class="time-box" id="minutes">M</div>
+        <div class="time-box" id="seconds">S</div>
+        <div class="time-box" id="milliseconds">MS</div>
+    </div>
+
+    <div class="button-bar">
+        <button class="button" onclick="location.href='home.html'"><img src="home.png" alt="Home"></button>
+        <button class="button" onclick="location.href='mine.html'"><img src="mine.png" alt="Mine"></button>
+        <button class="button" onclick="location.href='airdrop.html'"><img src="airdrop.png" alt="Airdrop"></button>
+    </div>
+
+    <script>
+        // Display the AB Coins from local storage
+        const abCoinCounter = document.getElementById('abCoinCounter');
+        const abCoins = localStorage.getItem('abCoins') || 0;
+        abCoinCounter.textContent = abCoins;
+
+        // Countdown timer logic
+        const targetDate = new Date('January 2, 2025 00:00:00').getTime();
+        const monthsBox = document.getElementById('months');
+        const daysBox = document.getElementById('days');
+        const hoursBox = document.getElementById('hours');
+        const minutesBox = document.getElementById('minutes');
+        const secondsBox = document.getElementById('seconds');
+        const millisecondsBox = document.getElementById('milliseconds');
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const timeLeft = targetDate - now;
+
+            if (timeLeft <= 0) {
+                monthsBox.textContent = "0";
+                daysBox.textContent = "0";
+                hoursBox.textContent = "0";
+                minutesBox.textContent = "0";
+                secondsBox.textContent = "0";
+                millisecondsBox.textContent = "0";
+                return;
+            }
+
+            const months = Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 30));
+            const days = Math.floor((timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            const milliseconds = Math.floor((timeLeft % 1000) / 10);
+
+            // Update the UI
+            monthsBox.textContent = months;
+            daysBox.textContent = days;
+            hoursBox.textContent = hours;
+            minutesBox.textContent = minutes;
+            secondsBox.textContent = seconds;
+            millisecondsBox.textContent = milliseconds;
+        }
+
+        // Update the timer every 10ms
+        setInterval(updateCountdown, 10);
+    </script>
+</body>
+</html>

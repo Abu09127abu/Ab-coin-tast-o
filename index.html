@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .loader-container {
+            width: 80%;
+            height: 30px;
+            background-color: grey;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        .loader-bar {
+            width: 0;
+            height: 100%;
+            background-color: white;
+            animation: loading 3s linear forwards;
+        }
+        .text {
+            font-size: 18px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        @keyframes loading {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader-container">
+        <div class="loader-bar"></div>
+    </div>
+    <div class="text">Loading, please wait...</div>
+    <script>
+        setTimeout(() => {
+            if (localStorage.getItem('firstVisit') === null) {
+                localStorage.setItem('firstVisit', 'false');
+                window.location.href = "c.html";
+            } else {
+                window.location.href = "home.html";
+            }
+        }, 3000);
+    </script>
+    <script type="module" src="loading.js"></script>
+</body>
+</html>

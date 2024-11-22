@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Coins</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .coin {
+            width: 110px;
+            height: 110px;
+            background: url('coin.png') no-repeat center center / cover;
+            border-radius: 50%;
+            box-shadow: 0 0 15px white;
+            animation: rotate 3s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .checking-bar-container {
+            width: 80%;
+            height: 20px;
+            background-color: grey;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            margin-bottom: 20px;
+        }
+        .checking-bar {
+            width: 0;
+            height: 100%;
+            background-color: white;
+            animation: checking 3s linear forwards;
+        }
+        @keyframes checking {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+        .claim-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            background-color: white;
+            color: black;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="coin"></div>
+    <div class="checking-bar-container">
+        <div class="checking-bar"></div>
+    </div>
+    <button class="claim-button" id="claimButton" onclick="claimCoins()">Claim Coins</button>
+
+    <script>
+        // Show the Claim button after 3 seconds
+        setTimeout(() => {
+            document.getElementById('claimButton').style.display = 'block';
+        }, 3000);
+
+        function claimCoins() {
+            const coins = Math.floor(Math.random() * (7000 - 1000 + 1)) + 1000;
+            const storedCoins = parseInt(localStorage.getItem('abCoins')) || 0;
+            localStorage.setItem('abCoins', storedCoins + coins);
+            alert(`You claimed ${coins} AB Coins!`);
+            window.location.href = "home.html";
+        }
+    </script>
+   <script type="module" src="loading.js"></script>
+   <script src="c.js"></script>
+</body>
+</html>
